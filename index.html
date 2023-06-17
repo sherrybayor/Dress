@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>&lt;model-viewer&gt; template</title>
+    <meta charset="utf-8">
+    <meta name="description" content="&lt;model-viewer&gt; template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="./styles.css" rel="stylesheet"/>
+  </head>
+  <body>
+      <!-- <model-viewer> HTML element -->
+      <model-viewer id="dress" src="dress.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls poster="poster.webp" shadow-intensity="1.31" shadow-softness="0.88" camera-orbit="10.24deg 81.58deg 2.039m" field-of-view="30deg" autoplay>
+          <div class="progress-bar hide" slot="progress-bar">
+              <div class="update-bar"></div>
+          </div>
+          <button slot="ar-button" id="ar-button">
+              View in your space
+          </button>
+          <div id="ar-prompt">
+              <img src="ar_hand_prompt.png">
+          </div>
+          <div class="controls">
+              <div>
+                  <p>Materials</p>
+                  <select id="diffuse">
+                      <option value="textures/1dr.png">Floral</option>
+                      <option value="textures/bridal.png">Bridal</option>
+                      <option value="textures/silk.png">Silk</option>
+                      <option value="textures/linen.jpg">Linen</option>
+                      <option value="textures/wall.jpg">Plain</option>
+                      <option value="textures/Duralee.jfif">Duralee</option>
+                      <option value="textures/Stonewashed.jfif">Stonewashed</option>
+                      <option value="textures/jacquard.jfif">Jacquard</option>
+                  </select>
+              </div>
+
+             
+              <div>
+<br>
+                <div class="controls" id="color-controls">
+                    <button data-color="#ff0000">Red</button><br>
+                    <button data-color="#00ff00">Green</button><br>
+                    <button data-color="#0000ff">Blue</button><br>
+                    <button data-color="#FFD700">Yellow</button><br>
+                    <button data-color="#FFA500">Orange</button>
+                    
+                  </div>
+
+      </model-viewer>
+      <script>
+        const modelViewerColor = document.querySelector("model-viewer#dress");
+        
+        document.querySelector('#color-controls').addEventListener('click', (event) => {
+          const colorString = event.target.dataset.color;
+          const [material] = modelViewerColor.model.materials;
+          material.pbrMetallicRoughness.setBaseColorFactor(colorString);
+        });
+        </script>
+      <script type="module">const modelViewerTexture1 = document.querySelector("model-viewer#dress");
+
+          modelViewerTexture1.addEventListener("load", () => {
+
+              const material = modelViewerTexture1.model.materials[0];
+
+              const createAndApplyTexture = async (channel, event) => {
+                  const texture = await modelViewerTexture1.createTexture(event.target.value);
+                  if (channel.includes('base') || channel.includes('metallic')) {
+                      material.pbrMetallicRoughness[channel].setTexture(texture);
+                  } else {
+                      material[channel].setTexture(texture);
+                  }
+              }
+
+              
+
+              document.querySelector('#diffuse').addEventListener('input', (event) => {
+                  createAndApplyTexture('baseColorTexture', event);
+              });
+
+              document.querySelector('#colour').addEventListener('input', (event) => {
+                  createAndApplyTexture('metallicRoughnessTexture', event);
+              });
+          });</script>
+      <script src="script.js"></script>
+      <!-- Loads <model-viewer> for browsers: -->
+      <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.0.1/model-viewer.min.js"></script>
+  </body>
+</html>
